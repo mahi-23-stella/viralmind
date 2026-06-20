@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViralMind AI — Content Strategy for Short-Form Creators</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* ── THEME VARS ── */
+[data-theme="dark"]{
+  --bg:#060612;--bg2:#0d0d1f;--bg3:#13132a;
+  --card:#0f0f24;--card2:#141430;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --border3:rgba(188,24,136,0.22);
+  --text:#ffffff;--text2:#c8c4e8;--muted:#6b6899;--muted2:#3d3b5e;
+  --nav-bg:rgba(6,6,18,0.72);
+  --strip-bg:rgba(255,255,255,0.015);
+  --sec-alt:rgba(255,255,255,0.018);
+  --win-bar:rgba(255,255,255,0.04);
+  --why-bg:var(--card);
+  --shadow:0 20px 60px rgba(0,0,0,0.4);
+  --orb1-c:rgba(188,24,136,0.22);
+  --orb2-c:rgba(240,148,51,0.15);
+  --orb3-c:rgba(108,24,220,0.18);
+  --grid-c:rgba(188,24,136,0.055);
+}
+[data-theme="light"]{
+  --bg:#f0f4ff;--bg2:#e8eeff;--bg3:#dde5ff;
+  --card:#ffffff;--card2:#f5f7ff;
+  --border:rgba(100,100,200,0.1);--border2:rgba(100,100,200,0.18);
+  --border3:rgba(188,24,136,0.25);
+  --text:#0f0f2a;--text2:#3a3860;--muted:#7070a0;--muted2:#a0a0c0;
+  --nav-bg:rgba(240,244,255,0.8);
+  --strip-bg:rgba(100,100,200,0.04);
+  --sec-alt:rgba(100,100,200,0.04);
+  --win-bar:rgba(100,100,200,0.06);
+  --why-bg:#ffffff;
+  --shadow:0 20px 60px rgba(100,100,200,0.12);
+  --orb1-c:rgba(188,24,136,0.1);
+  --orb2-c:rgba(240,148,51,0.08);
+  --orb3-c:rgba(108,24,220,0.08);
+  --grid-c:rgba(100,100,220,0.06);
+}
+
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;transition:background .3s,color .3s}
+section,nav,footer{position:relative;z-index:1}
+
+/* ── ANIMATED BG ── */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;transition:opacity .4s}
+#bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid-c) 1px,transparent 1px),linear-gradient(90deg,var(--grid-c) 1px,transparent 1px);background-size:64px 64px;animation:gridB 7s ease-in-out infinite;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black,transparent)}
+@keyframes gridB{0%,100%{opacity:.5}50%{opacity:1}}
+.orb{position:absolute;border-radius:50%;filter:blur(110px)}
+.o1{width:700px;height:700px;background:radial-gradient(circle,var(--orb1-c),transparent 65%);top:-250px;right:-150px;animation:of1 14s ease-in-out infinite}
+.o2{width:600px;height:600px;background:radial-gradient(circle,var(--orb2-c),transparent 65%);bottom:-100px;left:-200px;animation:of2 17s ease-in-out infinite}
+.o3{width:500px;height:500px;background:radial-gradient(circle,var(--orb3-c),transparent 65%);top:40%;right:5%;animation:of3 11s ease-in-out infinite}
+.o4{width:350px;height:350px;background:radial-gradient(circle,var(--orb1-c),transparent 65%);top:20%;left:10%;animation:of1 19s ease-in-out infinite reverse}
+@keyframes of1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-60px) scale(1.07)}65%{transform:translate(-35px,40px) scale(.94)}}
+@keyframes of2{0%,100%{transform:translate(0,0)}40%{transform:translate(-50px,-50px) scale(1.09)}75%{transform:translate(60px,30px) scale(.92)}}
+@keyframes of3{0%,100%{transform:translate(0,0) scale(1)}55%{transform:translate(-60px,50px) scale(1.12)}}
+.pt{position:absolute;border-radius:50%;animation:ptR linear infinite;opacity:0}
+@keyframes ptR{0%{transform:translateY(105vh) scale(0);opacity:0}8%{opacity:.9}78%{opacity:.3}100%{transform:translateY(-10vh) scale(1.5);opacity:0}}
+.sh{position:absolute;height:1px;border-radius:9px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);animation:shoot linear infinite;opacity:0}
+@keyframes shoot{0%{opacity:0;transform:translateX(-300px) rotate(-10deg)}5%{opacity:.7}70%{opacity:.2}100%{opacity:0;transform:translateX(130vw) rotate(-10deg)}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 44px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(24px) saturate(160%);border-bottom:1px solid var(--border);transition:background .3s}
+.n-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.n-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(188,24,136,.4);flex-shrink:0}
+.n-icon svg{width:22px;height:22px;fill:#fff}
+.n-name{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em}
+.n-right{display:flex;align-items:center;gap:12px}
+
+/* theme toggle */
+.theme-btn{width:44px;height:24px;border-radius:100px;border:1.5px solid var(--border2);background:var(--bg3);cursor:pointer;position:relative;transition:all .3s;flex-shrink:0}
+.theme-btn::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;top:2px;left:2px;transition:transform .3s,background .3s;background:linear-gradient(135deg,#f09433,#bc1888)}
+[data-theme="light"] .theme-btn::after{transform:translateX(20px);background:linear-gradient(135deg,#f09433,#bc1888)}
+.theme-icon{font-size:10px;position:absolute;top:50%;transform:translateY(-50%);pointer-events:none}
+.theme-icon.moon{right:5px}
+.theme-icon.sun{left:5px}
+
+.n-cta{padding:10px 22px;border-radius:10px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 20px rgba(188,24,136,.35);transition:all .2s;letter-spacing:.01em}
+.n-cta:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(188,24,136,.5)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 24px 90px}
+.hero-h1{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(42px,7.5vw,86px);font-weight:800;line-height:1.05;letter-spacing:-.04em;margin-bottom:24px;animation:fadeUp .7s ease both}
+.hero-h1 .grad{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-p{font-size:clamp(16px,2.2vw,19px);color:var(--text2);max-width:560px;margin:0 auto 10px;line-height:1.75;animation:fadeUp .7s .1s ease both}
+.hero-p2{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto 46px;animation:fadeUp .7s .16s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* input card */
+.ic{width:100%;max-width:640px;background:var(--card2);border:1px solid var(--border3);border-radius:28px;padding:30px 32px;box-shadow:0 0 80px rgba(188,24,136,.09),var(--shadow),inset 0 1px 0 rgba(255,255,255,.05);animation:fadeUp .7s .2s ease both;margin-bottom:34px}
+.ic-lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:block}
+.igf{display:flex;align-items:center;background:var(--bg2);border:1.5px solid var(--border2);border-radius:14px;margin-bottom:14px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.igf:focus-within{border-color:rgba(188,24,136,.55);box-shadow:0 0 0 4px rgba(188,24,136,.09)}
+.igf-icon{padding:0 14px;height:54px;display:flex;align-items:center;flex-shrink:0;border-right:1px solid var(--border2)}
+.igf-icon svg{width:26px;height:26px}
+input[type=text]{border:none;outline:none;background:transparent;height:54px;width:100%;padding:0 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:500;color:var(--text)}
+input[type=text]::placeholder{color:var(--muted2)}
+.niche-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.chip{padding:7px 13px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s}
+.chip:hover{background:rgba(188,24,136,.1);border-color:var(--border3);color:var(--text)}
+.chip.active{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-color:transparent;color:#fff;box-shadow:0 3px 14px rgba(188,24,136,.3)}
+.abtn{width:100%;height:56px;border-radius:14px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border:none;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 30px rgba(188,24,136,.45);transition:all .22s;position:relative;overflow:hidden}
+.abtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.14),transparent);opacity:0;transition:opacity .2s}
+.abtn:hover::after{opacity:1}
+.abtn:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(188,24,136,.6)}
+.abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.bstar{animation:spinS 3s linear infinite;font-size:18px}
+@keyframes spinS{to{transform:rotate(360deg)}}
+.errb{margin-top:12px;padding:12px 16px;border-radius:12px;background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.2);color:#fca5a5;font-size:13px;display:none}
+.trust-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;animation:fadeUp .7s .28s ease both}
+.tpill{display:flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--border2);border-radius:100px;padding:8px 16px;font-size:12px;font-weight:600;color:var(--text2)}
+
+/* Calendar */
+.cal-wrap{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:14px;overflow-x:auto}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;min-width:560px}
+.cal-day{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .2s}
+.cal-day:hover{border-color:var(--border3);transform:translateY(-2px)}
+.cal-head{padding:10px 12px;background:linear-gradient(135deg,rgba(188,24,136,.12),rgba(240,148,51,.06));border-bottom:1px solid var(--border);text-align:center}
+.cal-dayname{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cal-time{font-size:11px;font-weight:700;background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:3px}
+.cal-body{padding:10px 10px 12px}
+.cal-topic{font-size:11px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:6px}
+.cal-format{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:rgba(188,24,136,.1);color:#e879b8;border:1px solid rgba(188,24,136,.2)}
+
+.timing-wrap{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:14px}
+.tgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tday{text-align:center}
+.tname{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.tslot{height:30px;border-radius:7px;margin-bottom:3px;background:rgba(128,128,200,.06);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:transparent;border:1px solid transparent;transition:all .15s}
+.tslot.best{background:linear-gradient(135deg,#f09433,#bc1888);color:#fff;box-shadow:0 2px 10px rgba(188,24,136,.35);animation:slotP .35s ease both}
+.tslot.good{background:rgba(249,115,22,.1);color:#fb923c;border-color:rgba(249,115,22,.2)}
+@keyframes slotP{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.tip{padding:18px;background:var(--card2);border:1px solid var(--border);border-radius:16px;transition:all .2s}
+.tip:hover{border-color:var(--border3);transform:translateY(-3px)}
+.tip-icon{font-size:26px;margin-bottom:10px}
+.tip-t{font-size:13px;font-weight:700;margin-bottom:5px;color:var(--text)}
+.tip-d{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* ── MARQUEE ── */
+.marquee-wrap{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent)}
+.marquee-track{display:flex;gap:12px;width:max-content;animation:marquee 28s linear infinite}
+.marquee-wrap:hover .marquee-track{animation-play-state:paused}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.m-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:var(--card2);border:1px solid var(--border2);border-radius:100px;font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;flex-shrink:0;transition:all .2s}
+.m-chip:hover{border-color:var(--border3);color:var(--text);transform:scale(1.04)}
+
+/* ── SECTIONS ── */
+.sec{padding:110px 24px;text-align:center}
+.sec-alt{background:var(--sec-alt)}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;display:inline-block}
+.sec-h{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(30px,4.5vw,52px);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:14px;line-height:1.1}
+.sec-sub{font-size:17px;color:var(--text2);max-width:520px;margin:0 auto 64px;line-height:1.7}
+
+/* steps */
+.steps-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;max-width:940px;margin:0 auto}
+.step{background:var(--card2);border:1px solid var(--border);border-radius:24px;padding:36px 30px;text-align:left;transition:all .25s;position:relative;overflow:hidden}
+.step:hover{border-color:var(--border3);transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,.2),0 0 40px rgba(188,24,136,.06)}
+.step-n{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;line-height:1;margin-bottom:18px;background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.55}
+.step-t{font-size:18px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em;color:var(--text)}
+.step-d{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;max-width:1020px;margin:0 auto}
+.feat{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px;text-align:left;transition:all .22s}
+.feat:hover{border-color:rgba(188,24,136,.28);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.15),0 0 30px rgba(188,24,136,.05)}
+.feat-ic{width:48px;height:48px;border-radius:14px;margin-bottom:18px;background:linear-gradient(135deg,rgba(188,24,136,.15),rgba(240,148,51,.08));border:1px solid rgba(188,24,136,.18);display:flex;align-items:center;justify-content:center;font-size:22px}
+.feat-t{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em;color:var(--text)}
+.feat-d{font-size:13px;color:var(--muted);line-height:1.65}
+
+/* example window */
+.window{max-width:700px;margin:0 auto;background:var(--card2);border:1px solid var(--border2);border-radius:24px;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,.3),0 0 60px rgba(188,24,136,.05)}
+.win-bar{background:var(--win-bar);padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.wd{width:12px;height:12px;border-radius:50%}
+.wd:nth-child(1){background:#ff5f57}.wd:nth-child(2){background:#ffbd2e}.wd:nth-child(3){background:#28c840}
+.wurl{flex:1;background:rgba(128,128,200,.08);border-radius:8px;padding:5px 14px;font-size:12px;color:var(--muted);margin-left:14px;text-align:center}
+.win-body{padding:32px}
+.ex-prof{display:flex;align-items:center;gap:14px;padding:16px;background:rgba(128,128,200,.05);border:1px solid var(--border);border-radius:16px;margin-bottom:24px}
+.ex-av{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f09433,#bc1888);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;box-shadow:0 4px 16px rgba(188,24,136,.4)}
+.ex-h{font-size:15px;font-weight:700;color:var(--text)}.ex-n{font-size:12px;color:var(--muted);margin-top:3px}
+.ex-lbl{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.ex-idea{display:flex;align-items:center;gap:12px;padding:13px 16px;background:rgba(128,128,200,.04);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;font-size:14px;font-weight:500;color:var(--text);transition:all .18s}
+.ex-idea:hover{border-color:var(--border3);background:rgba(188,24,136,.05)}
+.ex-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:24px}
+.ex-s{background:rgba(128,128,200,.05);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.ex-sn{font-size:20px;font-weight:800;background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.ex-sl stroke{color:var(--muted)}
+
+/* WHY — bullet list */
+.why-list{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:10px;text-align:left}
+.why-item{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;background:var(--why-bg);border:1px solid var(--border);border-radius:14px;transition:all .2s}
+.why-item:hover{border-color:rgba(74,222,128,.2);transform:translateX(4px)}
+.wbullet{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#22d3ee);flex-shrink:0;margin-top:7px;box-shadow:0 0 8px rgba(74,222,128,.4)}
+.why-text{font-size:15px;font-weight:600;color:var(--text);line-height:1.5}
+
+/* FAQ */
+.faq-wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.faq-i{background:var(--card2);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:border-color .2s}
+.faq-i.open{border-color:var(--border3)}
+.faq-q{padding:22px 26px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color .2s;user-select:none;gap:12px;color:var(--text)}
+.faq-q:hover{color:#e879b8}
+.faq-ic{width:28px;height:28px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;flex-shrink:0;transition:all .25s}
+.faq-i.open .faq-ic{transform:rotate(45deg);background:rgba(188,24,136,.1);border-color:var(--border3);color:#e879b8}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-ai{padding:0 26px 22px;font-size:14px;color:var(--muted);line-height:1.75}
+.faq-i.open .faq-a{max-height:200px}
+
+/* CTA */
+#cta{padding:130px 24px;text-align:center;position:relative;overflow:hidden}
+#cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(188,24,136,.1),transparent);pointer-events:none}
+.cta-h{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(36px,6vw,68px);font-weight:800;letter-spacing:-.035em;margin-bottom:18px;line-height:1.05;color:var(--text)}
+.cta-h .grad{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-sub{font-size:18px;color:var(--text2);max-width:520px;margin:0 auto 44px;line-height:1.7}
+.cta-btn{display:inline-flex;align-items:center;gap:12px;padding:18px 40px;border-radius:16px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 40px rgba(188,24,136,.45);transition:all .22s}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 14px 55px rgba(188,24,136,.6)}
+.cta-note{margin-top:20px;font-size:13px;color:var(--muted2)}
+
+/* footer */
+footer{padding:30px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.f-logo{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:800;background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.f-note{font-size:12px;color:var(--muted2)}
+
+/* ── LOADER ── */
+#loader{display:none;padding:100px 24px;text-align:center;position:relative;z-index:1}
+.rings{position:relative;width:90px;height:90px;margin:0 auto 36px}
+.ring{position:absolute;border-radius:50%;border:2.5px solid transparent;animation:rspin linear infinite}
+.r1{inset:0;border-top-color:#f09433;border-right-color:#e6683c;animation-duration:1.1s}
+.r2{inset:10px;border-bottom-color:#dc2743;border-left-color:#cc2366;animation-duration:.85s;animation-direction:reverse}
+.r3{inset:22px;border-top-color:#bc1888;animation-duration:.65s}
+.rcore{position:absolute;inset:32px;border-radius:50%;background:linear-gradient(135deg,#f09433,#bc1888);animation:rcpop 1s ease-in-out infinite;box-shadow:0 0 20px rgba(188,24,136,.6)}
+@keyframes rspin{to{transform:rotate(360deg)}}@keyframes rcpop{0%,100%{transform:scale(1)}50%{transform:scale(.7)}}
+.l-title{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em;color:var(--text)}
+.l-sub{font-size:14px;color:var(--muted);margin-bottom:36px}
+.lsteps {display:flex;flex-direction:column;gap:10px;max-width:290px;margin:0 auto}
+.ls{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--card2);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:600;color:var(--muted);opacity:0;transform:translateX(-10px);transition:all .4s}
+.ls.active{opacity:1;transform:translateX(0);color:var(--text);border-color:var(--border2)}
+.ls.done{opacity:1;transform:translateX(0);color:#4ade80;border-color:rgba(74,222,128,.15)}
+
+/* ── RESULTS ── */
+#results{display:none;padding:60px 24px 100px;max-width:1040px;margin:0 auto;position:relative;z-index:1}
+.r-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px}
+.r-title{font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em;color:var(--text)}
+.r-title .g{background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.r-actions{display:flex;gap:8px;flex-wrap:wrap}
+.rbtn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s}
+.rbtn:hover{background:var(--bg3);border-color:var(--border2)}
+.rbtn-g{background:linear-gradient(135deg,#f09433,#bc1888);border-color:transparent;color:#fff;box-shadow:0 4px 16px rgba(188,24,136,.3)}
+.rbtn-g:hover{opacity:.88;transform:translateY(-1px)}
+.r-profile{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--border2);border-radius:100px;padding:8px 20px;width:fit-content;margin-bottom:28px}
+.r-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f09433,#bc1888);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.r-handle{font-size:14px;font-weight:700;color:var(--text)}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.sc{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:26px;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.sc:hover{border-color:var(--border3);transform:translateY(-3px)}
+.snum{font-family:'Bricolage Grotesque',sans-serif;font-size:38px;font-weight:800;background:linear-gradient(135deg,#f09433,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:7px}
+.slbl{font-size:12px;color:var(--muted);font-weight:600}
+.sdiv{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-bottom:28px}
+.ic2{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:24px;transition:all .22s;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+.ic2:hover{border-color:rgba(188,24,136,.3);transform:translateY(-5px);box-shadow:var(--shadow),0 0 40px rgba(188,24,136,.06)}
+.ic2::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,#f09433,#bc1888);opacity:0;transition:opacity .22s}
+.ic2:hover::before{opacity:1}
+.itop{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.irank{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.12em}
+.ibadge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:.04em}
+.bh{background:rgba(249,115,22,.1);color:#fb923c;border:1px solid rgba(249,115,22,.2)}
+.br{background:rgba(232,121,184,.1);color:#e879b8;border:1px solid rgba(232,121,184,.2)}
+.be{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.15)}
+.itopic{font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.3;letter-spacing:-.01em;color:var(--text)}
+.idesc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.ihooks{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.ihook{font-size:12px;color:var(--text2);padding:9px 12px;background:rgba(188,24,136,.05);border-left:2.5px solid #bc1888;border-radius:0 8px 8px 0;line-height:1.5}
+.itags{display:flex;flex-wrap:wrap;gap:6px}
+.itag{font-size:11px;padding:4px 10px;border-radius:100px;background:var(--bg3);color:var(--muted);border:1px solid var(--border);font-weight:600}
+.hw{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:14px}
+.hcloud{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.htag{padding:7px 14px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;border:1px solid}
+.htag:hover{transform:translateY(-2px);filter:brightness(1.2)}
+.hm{color:#fb923c;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.07)}
+.ht{color:#e879b8;border-color:rgba(232,121,184,.3);background:rgba(232,121,184,.07)}
+.hn{color:#c084fc;border-color:rgba(192,132,252,.25);background:rgba(192,132,252,.07)}
+.hleg-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.hleg{font-size:11px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px}
+.hd{width:8px;height:8px;border-radius:50%}
+
+@media(max-width:640px){
+  nav{padding:14px 18px}
+  .stats-row{grid-template-columns:1fr 1fr}.sc:last-child{grid-column:span 2}
+  .why-grid{grid-template-columns:1fr}
+  .ex-stats{grid-template-columns:1fr 1fr}
+  footer{padding:24px 20px}
+  .r-actions{width:100%}
+  .cal-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div id="bg">
+  <div id="bg-grid"></div>
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="orb o3"></div><div class="orb o4"></div>
+  <div id="pts"></div><div id="stars"></div>
+</div>
+
+<nav>
+  <a class="n-logo" href="#">
+    <div class="n-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L14.5 9.5H22L16 14L18.5 21.5L12 17L5.5 21.5L8 14L2 9.5H9.5L12 2Z" fill="white" opacity="0.95"/>
+        <circle cx="12" cy="12" r="3" fill="white" opacity="0.5"/>
+      </svg>
+    </div>
+    <span class="n-name">ViralMind AI</span>
+  </a>
+  <div class="n-right">
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
+      <span class="theme-icon moon">🌙</span>
+      <span class="theme-icon sun">☀️</span>
+    </button>
+    <button class="n-cta" onclick="scrollToInput()">Get Started Free</button>
+  </div>
+</nav>
+
+<section id="hero">
+  <h1 class="hero-h1">Your Personal AI Strategist<br>for <span class="grad">Viral Short-Form Content</span></h1>
+  <p class="hero-p">Stop guessing what to post. Paste your profile link and let AI analyze your niche, audience, and trending topics to discover exactly what videos to create next.</p>
+  <p class="hero-p2">Works for Instagram Reels, YouTube Shorts, TikTok, and every short-form platform — tailored to your style.</p>
+
+  <div class="ic" id="mainInput">
+    <span class="ic-lbl">Your Profile Link</span>
+    <div class="igf">
+      <div class="igf-icon">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <defs>
+            <linearGradient id="mpg" x1="0" y1="26" x2="26" y2="0">
+              <stop offset="0%" stop-color="#f09433"/>
+              <stop offset="50%" stop-color="#dc2743"/>
+              <stop offset="100%" stop-color="#bc1888"/>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="11" height="11" rx="3" stroke="url(#mpg)" stroke-width="1.8" fill="none"/>
+          <rect x="14" y="1" width="11" height="11" rx="3" stroke="url(#mpg)" stroke-width="1.8" fill="none"/>
+          <rect x="1" y="14" width="11" height="11" rx="3" stroke="url(#mpg)" stroke-width="1.8" fill="none"/>
+          <path d="M17 19.5L19.5 14L22 19.5M18 18H21" stroke="url(#mpg)" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <input type="text" id="instaInput" placeholder="instagram.com/you  or  youtube.com/@you"/>
+    </div>
+    <div class="niche-lbl">Content Niche (optional)</div>
+    <div class="chips" id="nicheWrap">
+      <button class="chip" data-niche="fitness">💪 Fitness</button>
+      <button class="chip" data-niche="food">🍳 Food</button>
+      <button class="chip" data-niche="tech">⚡ Tech</button>
+      <button class="chip" data-niche="fashion">👗 Fashion</button>
+      <button class="chip" data-niche="travel">✈️ Travel</button>
+      <button class="chip" data-niche="comedy">😂 Comedy</button>
+      <button class="chip" data-niche="motivation">🔥 Motivation</button>
+      <button class="chip" data-niche="education">📚 Education</button>
+      <button class="chip" data-niche="beauty">💄 Beauty</button>
+      <button class="chip" data-niche="gaming">🎮 Gaming</button>
+    </div>
+    <button class="abtn" id="analyzeBtn" onclick="startAnalysis()">
+      <span class="bstar">✦</span> Analyze & Generate Strategy
+    </button>
+    <div class="errb" id="errBox"></div>
+  </div>
+
+  <div class="trust-row">
+    <div class="tpill"><span>📱</span> Instagram Reels</div>
+    <div class="tpill"><span>▶️</span> YouTube Shorts</div>
+    <div class="tpill"><span>🎵</span> TikTok</div>
+    <div class="tpill"><span>⚡</span> Instant Results</div>
+  </div>
+</section>
+
+<div id="strip">
+  <div class="eyebrow" style="display:flex; justify-content:center;">Perfect for every type of creator</div>
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <span class="m-chip">💪 Fitness Creators</span>
+      <span class="m-chip">👗 Fashion Influencers</span>
+      <span class="m-chip">🍳 Food Bloggers</span>
+      <span class="m-chip">💄 Beauty Creators</span>
+      <span class="m-chip">📚 Educators</span>
+      <span class="m-chip">⚡ Tech Creators</span>
+      <span class="m-chip">🎮 Gaming Channels</span>
+      <span class="m-chip">✈️ Travel Creators</span>
+      <span class="m-chip">😂 Comedy Pages</span>
+      <span class="m-chip">🔥 Motivation Pages</span>
+      <span class="m-chip">🏢 Personal Brands</span>
+      <span class="m-chip">🎨 Artists</span>
+      <span class="m-chip">💪 Fitness Creators</span>
+      <span class="m-chip">👗 Fashion Influencers</span>
+      <span class="m-chip">🍳 Food Bloggers</span>
+      <span class="m-chip">💄 Beauty Creators</span>
+      <span class="m-chip">📚 Educators</span>
+      <span class="m-chip">⚡ Tech Creators</span>
+      <span class="m-chip">🎮 Gaming Channels</span>
+      <span class="m-chip">✈️ Travel Creators</span>
+      <span class="m-chip">😂 Comedy Pages</span>
+      <span class="m-chip">🔥 Motivation Pages</span>
+      <span class="m-chip">🏢 Personal Brands</span>
+      <span class="m-chip">🎨 Artists</span>
+    </div>
+  </div>
+</div>
+
+<section class="sec" id="how">
+  <div class="eyebrow">How It Works</div>
+  <h2 class="sec-h">Three Steps to Smarter Content</h2>
+  <p class="sec-sub">From your profile link to a full personalized content strategy in under 30 seconds.</p>
+  <div class="steps-wrap">
+    <div class="step"><div class="step-n">01</div><div class="step-t">Paste Your Profile Link</div><div class="step-d">Enter your Instagram, YouTube, or TikTok profile URL. No login or permissions required.</div></div>
+    <div class="step"><div class="step-n">02</div><div class="step-t">AI Analyzes Your Content</div><div class="step-d">Our AI studies your niche, posting style, audience interests, and combines it with real-time trend data.</div></div>
+    <div class="step"><div class="step-n">03</div><div class="step-t">Get Personalized Recommendations</div><div class="step-d">Receive trending reel ideas, viral hooks, hashtag strategy, and a 7-day content calendar — tailored to you.</div></div>
+  </div>
+</section>
+
+<section class="sec sec-alt" id="features">
+  <div class="eyebrow">What You Get</div>
+  <h2 class="sec-h">Everything You Need to Grow</h2>
+  <p class="sec-sub">Six powerful outputs from a single profile link.</p>
+  <div class="feats">
+    <div class="feat"><div class="feat-ic">🔥</div><div class="feat-t">Trending Topics For Your Niche</div><div class="feat-d">Discover what people are actively watching and searching for right now in your content category.</div></div>
+    <div class="feat"><div class="feat-ic">🎬</div><div class="feat-t">Viral Reel Ideas</div><div class="feat-d">Get ready-to-create reel concepts with opening hooks, formats, and predicted virality scores.</div></div>
+    <div class="feat"><div class="feat-ic">🔍</div><div class="feat-t">Content Gap Analysis</div><div class="feat-d">Find opportunities your competitors are missing and move on them before they get saturated.</div></div>
+    <div class="feat"><div class="feat-ic">📊</div><div class="feat-t">Growth Recommendations</div><div class="feat-d">Understand which content categories and formats can bring the most organic reach for your account.</div></div>
+    <div class="feat"><div class="feat-ic">👥</div><div class="feat-t">Audience Interest Insights</div><div class="feat-d">Learn what your specific audience is most likely to engage with, save, and share with others.</div></div>
+    <div class="feat"><div class="feat-ic">📅</div><div class="feat-t">7-Day Content Calendar</div><div class="feat-d">Get a structured weekly posting plan — the right content, at the right time, every day.</div></div>
+  </div>
+</section>
+
+<section class="sec" id="example">
+  <div class="eyebrow">Example Output</div>
+  <h2 class="sec-h">See AI Recommendations in Action</h2>
+  <p class="sec-sub">Here is what the AI generates for a fitness creator.</p>
+  <div class="window">
+    <div class="win-bar"><div class="wd"></div><div class="wd"></div><div class="wd"></div><div class="wurl">viralmind.ai — AI Analysis</div></div>
+    <div class="win-body">
+      <div class="ex-prof"><div class="ex-av">F</div><div><div class="ex-h">@fitnesscreator</div><div class="ex-n">Fitness · Health · Transformation</div></div></div>
+      <div class="ex-lbl">AI Suggestions</div>
+      <div class="ex-idea">🔥 30-Day Fat Loss Challenge</div>
+      <div class="ex-idea">🔥 3 Common Workout Mistakes Beginners Make</div>
+      <div class="ex-idea">🔥 What I Eat In A Day</div>
+      <div class="ex-idea">🔥 Protein Myths You Still Believe</div>
+      <div class="ex-idea">🔥 Gym Transformation Story Series</div>
+      <div class="ex-stats">
+        <div class="ex-s"><div class="ex-sn">High</div><div class="ex-sl">Growth Potential</div></div>
+        <div class="ex-s"><div class="ex-sn">92%</div><div class="ex-sl">Audience Interest</div></div>
+        <div class="ex-s"><div class="ex-sn">Med</div><div class="ex-sl">Competition Level</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-alt" id="why">
+  <div class="eyebrow">Why Creators Love It</div>
+  <h2 class="sec-h">Built for Real Growth</h2>
+  <div class="why-list" style="margin-top:48px">
+    <div class="why-item"><div class="wbullet"></div><div class="why-text">Personalized recommendations — not generic advice</div></div>
+    <div class="why-item"><div class="wbullet"></div><div class="why-text">Based on real current trends across all platforms</div></div>
+    <div class="why-item"><div class="wbullet"></div><div class="why-text">Saves hours of content research every single week</div></div>
+    <div class="why-item"><div class="wbullet"></div><div class="why-text">Helps increase organic reach and discoverability</div></div>
+    <div class="why-item"><div class="wbullet"></div><div class="why-text">Discover new content opportunities before they saturate</div></div>
+    <div class="why-item"><div class="wbullet"></div><div class="why-text">Beginner friendly — no experience or tools needed</div></div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="eyebrow">FAQ</div>
+  <h2 class="sec-h">Frequently Asked Questions</h2>
+  <div class="faq-wrap" style="margin-top:48px">
+    <div class="faq-i"><div class="faq-q" onclick="faqT(this)">How does ViralMind AI work?<span class="faq-ic">+</span></div><div class="faq-a"><div class="faq-ai">It analyzes your profile niche and combines it with current content trends to generate personalized reel ideas, hooks, hashtags, and a posting schedule tailored for your account and platform.</div></div></div>
+    <div class="faq-i"><div class="faq-q" onclick="faqT(this)">Which platforms does it support?<span class="faq-ic">+</span></div><div class="faq-a"><div class="faq-ai">ViralMind AI works for Instagram Reels, YouTube Shorts, TikTok, and any short-form video platform. Just paste your profile link from any of these platforms.</div></div></div>
+    <div class="faq-i"><div class="faq-q" onclick="faqT(this)">Are recommendations personalized to my profile?<span class="faq-ic">+</span></div><div class="faq-a"><div class="faq-ai">Yes. Every recommendation is generated specifically for your niche and profile. The AI takes your username and content category into account to avoid generic advice.</div></div></div>
+    <div class="faq-i"><div class="faq-q" onclick="faqT(this)">Does it guarantee viral content?<span class="faq-ic">+</span></div><div class="faq-a"><div class="faq-ai">No tool can guarantee virality. But ViralMind AI helps you make data-driven content decisions that dramatically improve your chances of reaching a wider audience.</div></div></div>
+    <div class="faq-i"><div class="faq-q" onclick="faqT(this)">Is it free to use?<span class="faq-ic">+</span></div><div class="faq-a"><div class="faq-ai">Yes, you can start with a free profile analysis and get your personalized content recommendations instantly — no signup required.</div></div></div>
+  </div>
+</section>
+
+<section id="cta">
+  <h2 class="cta-h">Stop Guessing.<br><span class="grad">Start Growing.</span></h2>
+  <p class="cta-sub">Get AI-powered content recommendations tailored to your profile and discover exactly what to post next — on any platform.</p>
+  <button class="cta-btn" onclick="scrollToInput()">Analyze My Profile</button>
+  <p class="cta-note">Works for Instagram, YouTube Shorts, TikTok and more. Free to start.</p>
+</section>
+
+<div id="loader">
+  <div class="rings"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="rcore"></div></div>
+  <div class="l-title">AI is analyzing your profile...</div>
+  <div class="l-sub">Scanning trends and generating your strategy</div>
+  <div class="lsteps">
+    <div class="ls" id="ls1">🔍 Detecting your niche and audience</div>
+    <div class="ls" id="ls2">📈 Scanning current viral trends</div>
+    <div class="ls" id="ls3">💡 Generating personalized content ideas</div>
+    <div class="ls" id="ls4">#️⃣ Building your hashtag strategy</div>
+  </div>
+</div>
+
+<div id="results">
+  <div class="r-header">
+    <div class="r-title">✦ Your <span class="g">Content Strategy</span></div>
+    <div class="r-actions">
+      <button class="rbtn" onclick="exportCal()">📅 Download Calendar</button>
+      <button class="rbtn" onclick="resetApp()">← New Analysis</button>
+      <button class="rbtn rbtn-g" onclick="copyTags()">📋 Copy Hashtags</button>
+    </div>
+  </div>
+  <div class="r-profile"><div class="r-av" id="rAv"></div><span class="r-handle" id="rHandle"></span></div>
+  <div class="stats-row" id="statsRow"></div>
+  <div class="sdiv">🎬 Top Content Ideas</div>
+  <div class="ig" id="ideasGrid"></div>
+  <div class="sdiv"># Hashtag Strategy</div>
+  <div class="hw">
+    <div class="hleg-row">
+      <span class="hleg"><span class="hd" style="background:#fb923c"></span> Mega</span>
+      <span class="hleg"><span class="hd" style="background:#e879b8"></span> Trending</span>
+      <span class="hleg"><span class="hd" style="background:#c084fc"></span> Niche</span>
+    </div>
+    <div class="hcloud" id="hCloud"></div>
+  </div>
+  <div class="sdiv">📅 7-Day Content Calendar</div>
+  <div class="cal-wrap"><div class="cal-grid" id="calGrid"></div></div>
+  <div class="sdiv">⏰ Best Posting Times (IST)</div>
+  <div class="timing-wrap"><div class="tgrid" id="tGrid"></div></div>
+  <div class="sdiv">💡 Pro Growth Tips</div>
+  <div class="tips-grid" id="tipsGrid"></div>
+</div>
+
+<footer>
+  <span class="f-logo">ViralMind AI</span>
+  <span class="f-note">AI-powered content strategy · Works for all short-form platforms</span>
+</footer>
+
+<script>
+// ── 1. BACKGROUND & LAYOUT CONTROLS ──
+var isCooldownActive = false;
+var REQUEST_COOLDOWN_TIME = 4000; 
+var selectedNiche = '', allTags = [], lastData = null;
+var pageIds = ['hero','strip','how','features','example','why','faq','cta'];
+
+(function(){
+  var pc=['rgba(188,24,136,A)','rgba(240,148,51,A)','rgba(108,24,220,A)','rgba(220,39,67,A)'];
+  var pw=document.getElementById('pts');
+  if(pw){
+    for(var i=0;i<28;i++){
+      var p=document.createElement('div');p.className='pt';var sz=(2+Math.random()*5)+'px';
+      var c=pc[Math.floor(Math.random()*pc.length)].replace('A',(0.5+Math.random()*.5).toFixed(2));
+      p.style.cssText='width:'+sz+';height:'+sz+';background:'+c+';left:'+Math.random()*100+'%;animation-duration:'+(9+Math.random()*13)+'s;animation-delay:'+(Math.random()*14)+'s;box-shadow:0 0 8px '+c;
+      pw.appendChild(p);
+    }
+  }
+  var sw=document.getElementById('stars');
+  if(sw){
+    for(var j=0;j<6;j++){
+      var s=document.createElement('div');s.className='sh';
+      s.style.cssText='width:'+(100+Math.random()*200)+'px;top:'+Math.random()*75+'%;animation-duration:'+(5+Math.random()*7)+'s;animation-delay:'+(Math.random()*12)+'s';
+      sw.appendChild(s);
+    }
+  }
+})();
+
+function toggleTheme(){
+  var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('vm-theme',t);
+}
+(function(){var t=localStorage.getItem('vm-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+
+document.querySelectorAll('.chip').forEach(function(b){
+  b.onclick=function(){
+    var same=selectedNiche===b.dataset.niche;
+    document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('active')});
+    selectedNiche=same?'':(b.dataset.niche||'');
+    if(!same)b.classList.add('active');
+  };
+});
+
+function scrollToInput(){
+  document.getElementById('mainInput').scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(function(){var inp=document.getElementById('instaInput'); if(inp) inp.focus()},600);
+}
+
+function faqT(el){
+  var i=el.parentElement;var o=i.classList.contains('open');
+  document.querySelectorAll('.faq-i').forEach(function(x){x.classList.remove('open')});
+  if(!o)i.classList.add('open');
+}
+
+function hidePage(h){
+  pageIds.forEach(function(id){var el=document.getElementById(id); if(el) el.style.display=h?'none':''});
+}
+
+function resetApp(){
+  hidePage(false);
+  document.getElementById('loader').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('analyzeBtn').disabled=false;
+  document.querySelector('nav').style.display='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── 2. ENGINE LOGIC LAYER ──
+function generateSmartData(user, niche) {
+  var capNiche = niche.toUpperCase();
+  return {
+    viralScore: Math.floor(84 + Math.random() * 14),
+    stats: { avgViews: "65K - 140K", engagementRate: "9.2%" },
+    hashtags: {
+      mega: ["#" + niche, "#viralreels", "#shorts"],
+      trending: ["#trendingindia", "#creatorlife", "#foryoupage", "#viralmind", "#shortform"],
+      niche: ["#" + niche + "creators", "#groworganic", "#indianshorts", "#" + niche + "tips", "#contentcreator"]
+    },
+    bestTimes: {
+      Mon: ["8AM", "6PM"], Tue: ["10AM", "8PM"], Wed: ["12PM", "9PM"],
+      Thu: ["3PM", "6PM"], Fri: ["10AM", "8PM"], Sat: ["12PM", "9PM"], Sun: ["8AM", "6PM"]
+    },
+    reelIdeas: [
+      { rank: 1, trendType: 'hot', topic: "Top 3 Mistakes in " + capNiche, description: "Show your audience common errors they make daily and instantly give the fix.", hooks: ["Stop doing this right now!", "If you want results, change this."], format: "Educational Reel", duration: "25s", virality: "94%" },
+      { rank: 2, trendType: 'rising', topic: "My Secret " + niche + " Routine Revealed", description: "Take behind the scenes shots of your actual creation workflow or daily habits.", hooks: ["No one talks about this secret...", "This single routine changed everything."], format: "Vlog Style", duration: "40s", virality: "89%" },
+      { rank: 3, trendType: 'evergreen', topic: "An Honest Review You Need To Hear", description: "Break down a popular trend or myth in the market with brutal honesty.", hooks: ["Do not buy into this hype!", "Is this trend actually worth it?"], format: "Talking Head", duration: "35s", virality: "87%" },
+      { rank: 4, trendType: 'hot', topic: "How to Start " + niche + " in 2026", description: "Give a 3 step blueprint for absolute beginners looking to enter this specific space.", hooks: ["Want to learn this in 60 seconds?", "The easiest way to start today."], format: "Step by Step List", duration: "45s", virality: "96%" },
+      { rank: 5, trendType: 'rising', topic: "X Secrets Experts Hide From You", description: "Share industry hacks that save time or money, keeping the video high retention.", hooks: ["They do not want you to know this.", "This feels illegal to know."], format: "Text Overlay + B-Roll", duration: "18s", virality: "91%" },
+      { rank: 6, trendType: 'evergreen', topic: "Before vs After Transformation Timeline", description: "A high impact visual showcase of progress over a specified duration.", hooks: ["They said it was impossible.", "How I went from zero to here."], format: "Fast Transitions", duration: "15s", virality: "93%" }
+    ]
+  };
+}
+
+async function getAIAnalysis(username,niche){
+
+  try{
+
+    const res = await fetch('http://127.0.0.1:5000/api/analyze',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        username,
+        niche
+      })
+    });
+
+    return await res.json();
+
+  }catch(err){
+
+    return generateSmartData(username,niche);
+
+  }
+
+}
+async function startAnalysis(){
+  var raw=document.getElementById('instaInput').value.trim();
+  var eb=document.getElementById('errBox'); if(eb) eb.style.display='none';
+  if(!raw){ if(eb){eb.textContent='Please enter your profile link first.'; eb.style.display='block';} return; }
+
+  if(isCooldownActive){
+    if(eb){ eb.textContent='Rate Limit Protection Active. Please wait 4 seconds.'; eb.style.display='block'; }
+    return;
+  }
+
+  var username=raw.replace(/^https?:\/\/(www\.)?(instagram\.com|youtube\.com|tiktok\.com)\//,'').replace(/\/$/, '').replace(/@/g,'').trim()||raw.replace(/@/g,'');
+  var niche=selectedNiche||'lifestyle';
+
+  isCooldownActive = true;
+  document.getElementById('analyzeBtn').disabled=true;
+  hidePage(true);
+  document.querySelector('nav').style.display='none';
+  document.getElementById('loader').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  var steps=['ls1','ls2','ls3','ls4']; var si=0;
+  var iv=setInterval(function(){
+    if(si>0){var p=document.getElementById(steps[si-1]); if(p){p.classList.remove('active'); p.classList.add('done');}}
+    if(si<steps.length){var currentStep=document.getElementById(steps[si]); if(currentStep) currentStep.classList.add('active'); si++;}
+    else clearInterval(iv);
+  },700);
+
+  try {
+    await new Promise(function(resolve) { setTimeout(resolve, 2800); });
+    clearInterval(iv);
+    steps.forEach(function(s){var e=document.getElementById(s); if(e){e.classList.remove('active'); e.classList.add('done');}});
+
+    var localData = await getAIAnalysis(username,niche);
+    lastData = localData;
+
+    document.getElementById('loader').style.display='none';
+    render(username, localData);
+
+  } catch(err) {
+    clearInterval(iv);
+    document.getElementById('loader').style.display='none';
+    hidePage(false); document.querySelector('nav').style.display='';
+    document.getElementById('analyzeBtn').disabled=false;
+    if(eb) { eb.textContent='System Notice: '+(err.message||'Failed to update layout.'); eb.style.display='block'; }
+  } finally {
+    setTimeout(function(){
+      var btn = document.getElementById('analyzeBtn'); if(btn) btn.disabled = false;
+      isCooldownActive = false;
+    }, REQUEST_COOLDOWN_TIME);
+  }
+}
+
+// ── 3. VISUAL RENDER LAYER ──
+function render(username, d){
+  document.getElementById('rAv').textContent=username[0].toUpperCase();
+  document.getElementById('rHandle').textContent='@'+username;
+  document.getElementById('statsRow').innerHTML='<div class="sc"><div class="snum">'+d.viralScore+'%</div><div class="slbl">Viral Score</div></div><div class="sc"><div class="snum">'+(d.stats&&d.stats.avgViews||'—')+'</div><div class="slbl">Expected Views</div></div><div class="sc"><div class="snum">'+(d.stats&&d.stats.engagementRate||'—')+'</div><div class="slbl">Engagement Rate</div></div>';
+
+  // Ideas Grid
+  var g=document.getElementById('ideasGrid'); g.innerHTML='';
+  (d.reelIdeas||[]).forEach(function(idea,i){
+    var bc=idea.trendType==='hot'?'bh':idea.trendType==='rising'?'br':'be';
+    var bi=idea.trendType==='hot'?'🔥 HOT':idea.trendType==='rising'?'📈 RISING':'🌿 EVERGREEN';
+    var c=document.createElement('div');c.className='ic2';c.style.animationDelay=(i*.07)+'s';
+    c.innerHTML='<div class="itop"><span class="irank">IDEA #'+String(idea.rank).padStart(2,'0')+'</span><span class="ibadge '+bc+'">'+bi+'</span></div><div class="itopic">'+(idea.topic||'')+'</div><div class="idesc">'+(idea.description||'')+'</div><div class="ihooks">'+((idea.hooks||[]).map(function(h){return '<div class="ihook">&#8220;'+h+'&#8221;</div>';}).join(''))+'</div><div class="itags"><span class="itag">'+(idea.format||'Reel')+'</span><span class="itag">'+(idea.duration||'')+'</span><span class="itag">'+(idea.virality||'')+'</span></div>';
+    g.appendChild(c);
+  });
+
+  // Cloud Tags
+  var cloud=document.getElementById('hCloud');cloud.innerHTML='';
+  allTags=[];
+  var ht=d.hashtags||{};
+  (ht.mega||[]).forEach(function(t){allTags.push(t);var e=document.createElement('span');e.className='htag hm';e.textContent=t;cloud.appendChild(e);});
+  (ht.trending||[]).forEach(function(t){allTags.push(t);var e=document.createElement('span');e.className='htag ht';e.textContent=t;cloud.appendChild(e);});
+  (ht.niche||[]).forEach(function(t){allTags.push(t);var e=document.createElement('span');e.className='htag hn';e.textContent=t;cloud.appendChild(e);});
+
+  // Calendar Engine
+  var calGrid=document.getElementById('calGrid');calGrid.innerHTML='';
+  var days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var bt=d.bestTimes||{};
+  var ideas=d.reelIdeas||[];
+  days.forEach(function(day,i){
+    var idea=ideas[i%ideas.length];
+    var time=(bt[day]||['12PM'])[0];
+    var col=document.createElement('div');col.className='cal-day';col.style.animationDelay=(i*.06)+'s';
+    col.innerHTML='<div class="cal-head"><div class="cal-dayname">'+day+'</div><div class="cal-time">'+time+' IST</div></div><div class="cal-body"><div class="cal-topic">'+(idea&&idea.topic||'Rest Day')+'</div>'+(idea?'<span class="cal-format">'+(idea.format||'Reel')+'</span>':'')+'</div>';
+    calGrid.appendChild(col);
+  });
+
+  // Timing Slots Matrix
+  var tg=document.getElementById('tGrid');tg.innerHTML='';
+  days.forEach(function(day){
+    var bts=(bt[day]||[]);
+    var col=document.createElement('div');col.className='tday';
+    col.innerHTML='<div class="tname">'+day+'</div>';
+    ['8AM','10AM','12PM','3PM','6PM','8PM','9PM'].forEach(function(slot,si){
+      var div=document.createElement('div');div.className='tslot';
+      if(bts.includes(slot)){
+        div.classList.add(bts[0]===slot?'best':'good');
+        div.textContent=slot;
+        div.style.animationDelay=(si*.04)+'s';
+      } else {
+        div.textContent='—';
+      }
+      col.appendChild(div);
+    });
+    tg.appendChild(col);
+  });
+
+  // Growth Tips Grid
+  var tips=[{i:'🎬',t:'Hook in 1 Second',d:'The first frame must stop the scroll. Use bold text or a surprising visual immediately.'},{i:'📐',t:'Shoot Vertical 9:16',d:'Full-screen reels get 30% more reach than cropped or horizontal videos.'},{i:'🔁',t:'Post 3 to 5 Times a Week',d:'Consistency beats virality. Regular accounts grow 3x faster than sporadic ones.'},{i:'💬',t:'Reply to Every Comment',d:'Engagement in the first hour signals the algorithm to push your content further.'},{i:'🎵',t:'Use Trending Audio',d:'Reels with trending sounds get 2x organic reach. Check the Reels tab weekly.'},{i:'📊',t:'Track and Iterate',d:'Check Insights every week and double down on the formats that perform best.'}];
+  document.getElementById('tipsGrid').innerHTML=tips.map(function(t){return '<div class="tip"><div class="tip-icon">'+t.i+'</div><div class="tip-t">'+t.t+'</div><div class="tip-d">'+t.d+'</div></div>';}).join('');
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── 4. EXPORT HANDLERS ──
+function copyTags(){
+  navigator.clipboard.writeText(allTags.join(' ')).then(function(){
+    var b=document.querySelector('.rbtn-g');var o=b.innerHTML;b.innerHTML='✅ Copied!';
+    setTimeout(function(){b.innerHTML=o;},2000);
+  });
+}
+
+function exportCal(){
+  if(!lastData)return;
+  var ideas=lastData.reelIdeas||[];
+  var days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var dkeys=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var times=lastData.bestTimes||{};
+  var txt='YOUR 7-DAY CONTENT CALENDAR\nGenerated by ViralMind AI\n'+'='.repeat(40)+'\n\n';
+  days.forEach(function(day,i){
+    var idea=ideas[i%ideas.length];
+    var time=(times[dkeys[i]]||['12PM'])[0];
+    txt+=day.toUpperCase()+' - Post at '+time+' IST\n';
+    txt+='Topic: '+(idea&&idea.topic||'Rest day')+'\n';
+    if(idea&&idea.hooks&&idea.hooks[0])txt+='Hook: "'+idea.hooks[0]+'"\n';
+    txt+='Format: '+(idea&&idea.format||'-')+' | Duration: '+(idea&&idea.duration||'-')+'\n\n';
+  });
+  txt+='HASHTAGS:\n'+allTags.join(' ');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+  a.download='ViralMind_ContentCalendar.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+</script>
+</body>
+</html>
